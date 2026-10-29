@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Harness Engineering Course</title>
 <meta name="description" content="A hands-on course on harness engineering: the loop, tools, context, skills, hooks, sub-agents, guardrails, evals and cost controls around an LLM, taught through one running PM Agent example.">
-<script>(function(){try{var t=JSON.parse(localStorage.getItem('he-theme'));if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+<script>(function(){try{var t=JSON.parse(localStorage.getItem('he-theme'));document.documentElement.setAttribute('data-theme',t==='light'?'light':'dark');}catch(e){document.documentElement.setAttribute('data-theme','dark');}})();</script>
 <style>
 :root{
   --bg:#fbfaf7; --surface:#ffffff; --surface-2:#f4f2ec; --text:#1c2230; --muted:#5a6372; --border:#e3dfd6;
@@ -15,18 +15,18 @@
   --hl-kw:#a0307a; --hl-str:#1d7a3f; --hl-com:#7a8291; --hl-num:#a85b00; --hl-fn:#2c56c9; --hl-built:#6a3fb5;
  color-scheme:light;}
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#111419; --surface:#181c23; --surface-2:#20252e; --text:#e5e8ed; --muted:#9aa3b1; --border:#2b313c;
-  --accent:#86a8ff; --accent-ink:#0c1020; --accent-soft:#1d2741; --code-bg:#0d1015; --code-text:#dde2ea;
-  --ok:#55c98f; --ok-soft:#14291f; --bad:#ff8a8a; --bad-soft:#331a1c; --warn-bg:#2a2414; --warn-border:#b38a25;
-  --pm-bg:#13231c; --pm-border:#3f9e70; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
-  --hl-kw:#ff8fd0; --hl-str:#8fdc9f; --hl-com:#7d8696; --hl-num:#ffb86b; --hl-fn:#8fb3ff; --hl-built:#c6a4ff;
+  --bg:#130c24; --surface:#1b1231; --surface-2:#251a44; --text:#ede8fb; --muted:#a99ccf; --border:#392a63;
+  --accent:#b794f6; --accent-ink:#1a0f33; --accent-soft:#2e2058; --code-bg:#0f091d; --code-text:#e4dcf7;
+  --ok:#6ee7a8; --ok-soft:#133126; --bad:#ff8fa3; --bad-soft:#3a1626; --warn-bg:#2d2412; --warn-border:#b38a25;
+  --pm-bg:#1a1f33; --pm-border:#8b7cf6; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(10,4,30,.45);
+  --hl-kw:#f0a3ff; --hl-str:#9be7b0; --hl-com:#8678b0; --hl-num:#ffc27a; --hl-fn:#a5b8ff; --hl-built:#d0b3ff;
  color-scheme:dark;} }
 :root[data-theme="dark"]{
-  --bg:#111419; --surface:#181c23; --surface-2:#20252e; --text:#e5e8ed; --muted:#9aa3b1; --border:#2b313c;
-  --accent:#86a8ff; --accent-ink:#0c1020; --accent-soft:#1d2741; --code-bg:#0d1015; --code-text:#dde2ea;
-  --ok:#55c98f; --ok-soft:#14291f; --bad:#ff8a8a; --bad-soft:#331a1c; --warn-bg:#2a2414; --warn-border:#b38a25;
-  --pm-bg:#13231c; --pm-border:#3f9e70; --shadow:0 1px 2px rgba(0,0,0,.3),0 4px 16px rgba(0,0,0,.25);
-  --hl-kw:#ff8fd0; --hl-str:#8fdc9f; --hl-com:#7d8696; --hl-num:#ffb86b; --hl-fn:#8fb3ff; --hl-built:#c6a4ff;
+  --bg:#130c24; --surface:#1b1231; --surface-2:#251a44; --text:#ede8fb; --muted:#a99ccf; --border:#392a63;
+  --accent:#b794f6; --accent-ink:#1a0f33; --accent-soft:#2e2058; --code-bg:#0f091d; --code-text:#e4dcf7;
+  --ok:#6ee7a8; --ok-soft:#133126; --bad:#ff8fa3; --bad-soft:#3a1626; --warn-bg:#2d2412; --warn-border:#b38a25;
+  --pm-bg:#1a1f33; --pm-border:#8b7cf6; --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 22px rgba(10,4,30,.45);
+  --hl-kw:#f0a3ff; --hl-str:#9be7b0; --hl-com:#8678b0; --hl-num:#ffc27a; --hl-fn:#a5b8ff; --hl-built:#d0b3ff;
  color-scheme:dark;}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:76px}
@@ -45,7 +45,10 @@ h1,h2,h3,h4{line-height:1.25;letter-spacing:-.01em}
 .tb-btn{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:10px;padding:8px 12px;font:inherit;font-size:14px;cursor:pointer;white-space:nowrap}
 .tb-btn:hover{border-color:var(--accent)}
 .tb-btn[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
-.menu-btn{display:none}
+.sidebar,.topbar,main{transition:transform .25s ease,margin-left .25s ease}
+body.sidebar-collapsed .sidebar{transform:translateX(-105%)}
+body.sidebar-collapsed .topbar{margin-left:0}
+body.sidebar-collapsed main{margin-left:0}
 .sidebar{position:fixed;inset:0 auto 0 0;width:300px;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);padding:18px 14px 40px;z-index:40}
 .side-title{font-size:19px;font-weight:750;margin:2px 8px 2px}
 .side-sub{font-size:13px;color:var(--muted);margin:0 8px 12px}
@@ -210,7 +213,7 @@ body.searching .part-banner{display:none}
 </aside>
 <div class="overlay"></div>
 <div class="topbar">
-  <button class="tb-btn menu-btn" id="menuBtn" type="button" aria-controls="sidebar" aria-expanded="false">☰ Menu</button>
+  <button class="tb-btn menu-btn" id="menuBtn" type="button" aria-controls="sidebar" aria-expanded="true" title="Show or hide the sidebar (B)">☰ Menu</button>
   <span class="brand">Harness Engineering</span>
   <label class="search"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
     <input id="search" type="search" placeholder="Search modules and glossary  ( / )" autocomplete="off" aria-label="Search modules"></label>
@@ -2641,7 +2644,7 @@ cat pm_agent_out/tools.jsonl            # audit log of every tool call</code></p
 
   /* ---------- theme ---------- */
   var themeBtn=document.getElementById('themeBtn');
-  function currentTheme(){return root.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  function currentTheme(){return root.getAttribute('data-theme')||'dark';}
   function setThemeLabel(){var t=currentTheme();themeBtn.textContent=t==='dark'?'☀︎ Light':'☾ Dark';themeBtn.setAttribute('aria-label','Switch to '+(t==='dark'?'light':'dark')+' mode');}
   themeBtn.addEventListener('click',function(){var t=currentTheme()==='dark'?'light':'dark';root.setAttribute('data-theme',t);store.set('he-theme',t);setThemeLabel();renderDiagrams();});
   setThemeLabel();
@@ -2664,7 +2667,7 @@ cat pm_agent_out/tools.jsonl            # audit log of every tool call</code></p
   async function renderDiagrams(){
     if(!window.mermaid){diagrams.forEach(function(d){d.classList.add('mmd-error');});return;}
     var dark=currentTheme()==='dark'; renderRun++;
-    mermaid.initialize({startOnLoad:false,theme:dark?'dark':'default',securityLevel:'strict',fontFamily:'inherit',flowchart:{useMaxWidth:true,htmlLabels:true},sequence:{useMaxWidth:true}});
+    mermaid.initialize({startOnLoad:false,theme:dark?'base':'default',themeVariables:dark?{darkMode:true,background:'#251a44',primaryColor:'#3a2a6e',primaryTextColor:'#ede8fb',primaryBorderColor:'#8b7cf6',secondaryColor:'#2e2058',tertiaryColor:'#1b1231',lineColor:'#b794f6',textColor:'#ede8fb',noteBkgColor:'#2e2058',noteTextColor:'#ede8fb',actorBkg:'#3a2a6e',actorBorder:'#8b7cf6',actorTextColor:'#ede8fb',signalColor:'#b794f6',signalTextColor:'#ede8fb',clusterBkg:'#1b1231',clusterBorder:'#5b45a8',edgeLabelBackground:'#251a44'}:{},securityLevel:'strict',fontFamily:'inherit',flowchart:{useMaxWidth:true,htmlLabels:true},sequence:{useMaxWidth:true}});
     for(var i=0;i<diagrams.length;i++){
       var d=diagrams[i];
       try{var r=await mermaid.render('mmd-'+renderRun+'-'+i,d.getAttribute('data-src'));d.innerHTML=r.svg;d.classList.remove('mmd-error');var vb=d.querySelector('svg')&&d.querySelector('svg').viewBox.baseVal;if(vb&&vb.width)d.style.setProperty('--nat',Math.round(Math.min(vb.width,760)*0.8)+'px');d.setAttribute('data-rendered','1');}
@@ -2706,7 +2709,15 @@ cat pm_agent_out/tools.jsonl            # audit log of every tool call</code></p
 
   /* ---------- mobile menu ---------- */
   function closeNav(){body.classList.remove('nav-open');document.getElementById('menuBtn').setAttribute('aria-expanded','false');}
-  document.getElementById('menuBtn').addEventListener('click',function(){var open=body.classList.toggle('nav-open');this.setAttribute('aria-expanded',open?'true':'false');});
+  var menuBtn=document.getElementById('menuBtn');
+  function isDesktop(){return window.innerWidth>860;}
+  function setCollapsed(c){body.classList.toggle('sidebar-collapsed',c);menuBtn.setAttribute('aria-expanded',c?'false':'true');store.set('he-sidebar-collapsed',c);}
+  if(isDesktop()){menuBtn.setAttribute('aria-expanded','true');if(store.get('he-sidebar-collapsed',false))setCollapsed(true);}
+  menuBtn.addEventListener('click',function(){
+    if(isDesktop()){setCollapsed(!body.classList.contains('sidebar-collapsed'));}
+    else{var open=body.classList.toggle('nav-open');menuBtn.setAttribute('aria-expanded',open?'true':'false');}
+  });
+  document.addEventListener('keydown',function(e){if((e.key==='b'||e.key==='B')&&!e.ctrlKey&&!e.metaKey&&!e.altKey&&!/input|textarea/i.test(document.activeElement.tagName)){e.preventDefault();menuBtn.click();}});
   document.querySelector('.overlay').addEventListener('click',closeNav);
   document.addEventListener('keydown',function(e){if(e.key==='Escape')closeNav();});
 
